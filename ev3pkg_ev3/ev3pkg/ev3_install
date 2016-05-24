@@ -1,0 +1,25 @@
+#!/bin/bash 
+
+cmd="update-rc.d ev3_con defaults"
+
+if [ $# -ne 1 ]; 
+    then echo
+	 echo "Usage: ./ev3_install <absolute_path_to_package>"
+	 echo "  i.e: ./ev3_install /$USER/ev3pkg"
+else
+	PKG_PATH=$1
+	
+	g++ -std=c++11 $PKG_PATH/ev3_con.cpp -o ev3_con $PKG_PATH/ev3dev-lang/cpp/lib/libev3dev.a  -lpthread
+	
+	echo "#! /bin/sh" > /etc/init.d/ev3_con 
+	echo "$PKG_PATH/ev3_con" >> /etc/init.d/ev3_con
+	chmod u+x /etc/init.d/ev3_con
+	
+	eval $cmd
+
+
+	echo
+	echo
+	echo -e "\e[38;5;94m\e[1mWARNING: \e[21mThe device must be rebooted in order to complete the instalation. Please execute the \e[0m\e[1mreboot\e[21m \e[38;5;94mcommand.\e[0m"
+	echo
+fi
